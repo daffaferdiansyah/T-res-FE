@@ -14,7 +14,7 @@ function Login() {
     useEffect(() => {
         let data = localStorage.getItem('data');
         if(data !== null){
-            window.location.href = "home"
+            window.location.href = "homepage"
         }
     }, []);
 
