@@ -12,9 +12,8 @@ function Login() {
                     </div>
                 </div>
             </div>
-            <div className='w-1/2 bg-primary'>
-                <div className='flex justify-center items-center h-screen'>
-                    <img src={logotelkom} alt="" />
+            <div className='w-1/2 bg-primary bg-no-repeat bg-center' style={{backgroundImage: `url(${logotelkom})`}}>
+                <div className='flex justify-center items-center h-screen'  >
                     <form>
                         <div class="mb-4">
                             <label for="username" class="block text-gray-700 font-semibold mb-2">Username</label>
