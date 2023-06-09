@@ -446,6 +446,13 @@ export default function Details() {
           <div className='grid grid-cols-2 justify-center'>
             <div>
                 <img src={gsg} class="w-3/5 h-auto rounded-2xl" alt="" />
+                <div class="bg-red-100 border mt-[1rem] mr-[20rem] border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                <strong class="font-bold">PERHATIAN! </strong>
+                <span class="block sm:inline"> Jadwal sudah terisi!</span>
+                <span class="absolute top-0 bottom-0 right-0 px-4 py-3">
+                  <svg class="fill-current h-6 w-6 text-red-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><title>Close</title><path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"/></svg>
+                </span>
+              </div>
             </div>
             <div class="text-6xl font-bold rounded-lg text-center">
                 <p>GEDUNG SERBA GUNA</p>
@@ -453,6 +460,7 @@ export default function Details() {
           </div>
           <div className='grid grid-cols-3'>
             <div>
+              
             <h1 class="text-center">
               <span class="text-black-500 font-bold">Pilih jadwal</span>
             </h1>
@@ -489,26 +497,31 @@ export default function Details() {
           dateFormat="h:mm aa"
         />
       </DatepickerPresentationGroup>
+        
+            <button
+            type="submit"
+            className="bg-green-500 w-full mt-[3rem] hover:bg-green-900 text-white font-bold py-2 px-4 rounded">
+            Submit
+          </button>
             </div>
 
             {/* Pokoknya daerah sini yg mulai aneh, ntar liat aja klo dh di run */}
             <div>
             <h1 class="text-center">
-              <span class="text-black-500 font-bold">Status</span>
+              <span class="text-black-500 font-bold"></span>
             </h1>
             <div className="flex h-screen">
-              <div className="mx-auto">
-                <div className={`w-32 h-16 flex items-center justify-center rounded-lg bg-green-500`}>
-                  <span className="text-white text-lg">Tersedia</span>
-                </div>
+              <div>
+              
               </div>
             </div>
             </div>
-            <div className='grid grid-flow-row'>
+            <div className='space-y-4'>
                 <div>
                     <p>Deskripsi</p>
                 </div>
                 <div>
+                    Lorem ipsum, dolor sit amet consectetur adipisicing elit. Laboriosam illum dicta nesciunt vitae dignissimos ea quibusdam molestiae dolorum magni id qui maxime necessitatibus autem incidunt suscipit, explicabo excepturi rerum adipisci est rem! Saepe, repudiandae ex aperiam sunt quo aliquid incidunt velit dolorem aut ratione modi beatae odit autem iure hic, quasi recusandae tenetur iusto accusantium voluptate consequatur. Quibusdam fugit facilis id sit fuga doloremque at inventore distinctio blanditiis temporibus suscipit, placeat vitae, quod praesentium in sunt odio velit omnis deleniti molestias? Odit veniam, modi deleniti cum, labore sunt earum minus quibusdam quasi perspiciatis ea eius, quaerat in vel magni corrupti!
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam aliquam eget nisl id aliquet. Mauris vitae turpis vitae sapien scelerisque dapibus nec sollicitudin magna. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Ut venenatis lobortis arcu non feugiat. Duis nisl justo, posuere facilisis fermentum sed, tincidunt quis felis. Etiam lacus dui, euismod non ornare nec, gravida at sapien. 
                 </div>
                 <div>
