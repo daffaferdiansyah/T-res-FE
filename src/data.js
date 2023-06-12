@@ -52,5 +52,5 @@ const data = [
         "deskripsi": "Lapangan untuk seluruh kegiatan mahasiswa",
         "fasilitas": "Kosongan",
         "kapasitas": 1000
-    },
+    }
 ]
