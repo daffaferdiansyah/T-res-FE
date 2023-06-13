@@ -24,7 +24,7 @@ function Login() {
             username: username,
             password: password,
         }).then((res) => {  
-            localStorage.setItem('data', JSON.stringify(res.data));
+            localStorage.setItem('user', JSON.stringify(res.data));
             setUsername('');
             setPassword('');
             return Swal.fire({

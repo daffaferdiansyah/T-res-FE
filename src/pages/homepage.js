@@ -42,7 +42,7 @@ function Homepage() {
               {
                 building.map((item, index) => {
                   return (
-                    <Link key={index} to={`/detail/${item._id}`}>
+                    <Link key={index} to={`/details/${item._id}`}>
                     <div className='w-[15rem] h-[20rem] bg-gray-300 rounded-xl bg-cover bg-center relative' style={{ backgroundImage: `url(${telkom})`}}>                
                       <div className='absolute bottom-0 px-2 bg-gray-400 w-full h-20 text-center rounded-xl'>
                         <p className='text-xl font-bold font-Montserrat'>{item.nama}</p>

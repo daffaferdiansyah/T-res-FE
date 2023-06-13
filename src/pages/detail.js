@@ -4,17 +4,11 @@ import "react-datepicker/dist/react-datepicker.css";
 import { BiCalendar, BiTime } from "react-icons/bi";
 import back from '../assets/left-arrow (2).png'
 import gsg from '../assets/gsg.jpeg'
-// import Datepicker from 'flowbite-datepicker/Datepicker';
 import flowbit from '../../node_modules/flowbite/dist/flowbite.min.js'
-// import duit from '../aset/saldo.png'
-// import {
-//   Datepicker,
-//   Input,
-//   initTE,
-// } from "tw-elements";
+import Swal from "sweetalert2";
+import axios from 'axios';
+import { useNavigate, useParams } from 'react-router-dom';
 
-// initTE({ Datepicker, Input });
-// import Datepicker from "react-tailwindcss-datepicker";
 
 function DatePicker1(props) {
   /** @preserve
@@ -391,19 +385,44 @@ function DatepickerPresentationGroup({ caption, children }) {
 
 
 export default function Details() {
-  // const [value, setValue] = useState({
-  //   startDate: new Date(),
-  //   endDate: new Date().setMonth(11)
-  // });
-
-  // const handleValueChange = (newValue) => {
-  //     console.log("newValue:", newValue);
-  //     setValue(newValue);
-  // }
-
+  const navigate = useNavigate();
+  const { id } = useParams();
   const [startDate, setStartDate] = useState(new Date());
   const [startTime, setStartTime] = useState(new Date());
   const [endTime, setEndTime] = useState(new Date());
+  const [modal, setModal] = useState(false);
+  const [user, setUserData] = useState({});
+  const [namaTempat, setNamaTempat] = useState('');
+  const [deskripsiTempat, setDeskripsiempat] = useState('');
+  const [fasilitasTempat, setFasilitasTempat] = useState('');
+  const [kapasitasTempat, setKapasitasTempat] = useState('');
+
+  React.useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('user'));
+    setUserData(user);
+
+    if(!localStorage.getItem('user')){
+      navigate('/login');
+    }
+
+    axios.get(`http://localhost:8080/place/view/${id}`)
+    .then((res) => {
+      console.log(res.data);
+      setNamaTempat(res.data.data.nama);
+      setDeskripsiempat(res.data.data.deskripsi);
+      setFasilitasTempat(res.data.data.fasilitas);
+      setKapasitasTempat(res.data.data.kapasitas);
+      console.log(namaTempat, deskripsiTempat, fasilitasTempat, kapasitasTempat);
+    })
+    .catch((error) => {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: error.message,
+      });
+      navigate('/homepage');
+    });
+  }, []);
 
   const handleStartTimeChange = useCallback(
     (start) => {
@@ -430,6 +449,55 @@ export default function Details() {
     [setStartDate]
   );
 
+  // return Swal.fire({
+  //   heightAuto: false,
+  //   icon: "success",
+  //   title: "Berhasil",
+  //   text: "Schedule available",
+  //   confirmButtonColor: "#8B5CF6",
+  //   confirmButtonText: "Ok",
+  // }).then((res) => {
+  //   if (res.isConfirmed) window.location.href = "/homepage";
+  // });
+  const submitHandler = (e) => {
+    e.preventDefault();
+    axios.get('http://localhost:8080/schedule/availability', {
+      tanggal: startDate,
+      waktuAwal: startTime,
+      waktuAkhir: endTime
+    }).then((res) => {  
+      if (res.status == '200') {
+        axios.post('http://localhost:8080/schedule/availability', {
+          tanggal: startDate,
+          waktuAwal: startTime,
+          waktuAkhir: endTime,
+          fullname: user.data.userData.fullname,
+          namaTempat: namaTempat,
+          org: user.data.userData.org
+        })
+        .then(() => {
+          return Swal.fire({
+            heightAuto: false,
+            icon: "success",
+            title: "Berhasil",
+            text: "Peminjaman Berhasil!",
+            confirmButtonColor: "#8B5CF6",
+            confirmButtonText: "Ok",
+          })
+          .then((res) => {
+            if (res.isConfirmed) window.location.href = "/homepage";
+          })
+        })
+      }
+    }).catch((error) => {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: error.message,
+      })
+    });
+  }
+
   return (
     <div>
       <script src={flowbit}></script>
@@ -444,91 +512,91 @@ export default function Details() {
       <div className='flex bg-primary h-screen'>
         <div className="grid grid-rows-2 mt-5 px-10">
           <div className='grid grid-cols-2 justify-center'>
+            
             <div>
                 <img src={gsg} class="w-3/5 h-auto rounded-2xl" alt="" />
+                { modal && 
                 <div class="bg-red-100 border mt-[1rem] mr-[20rem] border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-                <strong class="font-bold">PERHATIAN! </strong>
-                <span class="block sm:inline"> Jadwal sudah terisi!</span>
-                <span class="absolute top-0 bottom-0 right-0 px-4 py-3">
-                  <svg class="fill-current h-6 w-6 text-red-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><title>Close</title><path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"/></svg>
-                </span>
-              </div>
+                  <strong class="font-bold">PERHATIAN! </strong>
+                  <span class="block sm:inline"> Jadwal sudah terisi!</span>
+                  <span class="absolute top-0 bottom-0 right-0 px-4 py-3">
+                    <svg class="fill-current h-6 w-6 text-red-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><title>Close</title><path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"/></svg>
+                  </span>
+                </div>
+                }
+                
             </div>
             <div class="text-6xl font-bold rounded-lg text-center">
-                <p>GEDUNG SERBA GUNA</p>
+                <p>{ namaTempat }</p>
             </div>
           </div>
           <div className='grid grid-cols-3'>
             <div>
-              
-            <h1 class="text-center">
-              <span class="text-black-500 font-bold">Pilih jadwal</span>
-            </h1>
-<DatepickerPresentationGroup caption="Tanggal">
-        <DatePicker1
-          selected={startDate}
-          onChange={handleDateChange}
-          customInput={<CustomInputField name="name" label="Select date" />}
-          startDate={startDate}
-          popperPlacement="bottom"
-        />
-      </DatepickerPresentationGroup>
-      <DatepickerPresentationGroup caption="Jam Mulai">
-        <DatePicker1
-          selected={startTime}
-          onChange={handleStartTimeChange}
-          customInput={<CustomInputField name="name" label="Select time" />}
-          startDate={startDate}
-          popperPlacement="bottom"
-          showTimeSelect
-          showTimeSelectOnly
-          dateFormat="h:mm aa"
-        />
-      </DatepickerPresentationGroup>
-      <DatepickerPresentationGroup caption="Jam akhir">
-        <DatePicker1
-          selected={endTime}
-          onChange={handleEndTimeChange}
-          customInput={<CustomInputField name="name" label="Select time" />}
-          startDate={startDate}
-          popperPlacement="bottom"
-          showTimeSelect
-          showTimeSelectOnly
-          dateFormat="h:mm aa"
-        />
-      </DatepickerPresentationGroup>
-        
-            <button
-            type="submit"
-            className="bg-green-500 w-full mt-[3rem] hover:bg-green-900 text-white font-bold py-2 px-4 rounded">
-            Submit
-          </button>
+              <h1 class="text-center">
+                <span class="text-black-500 font-bold">Pilih jadwal</span>
+              </h1>
+              <DatepickerPresentationGroup caption="Tanggal">
+                <DatePicker1
+                  selected={startDate}
+                  onChange={handleDateChange}
+                  customInput={<CustomInputField name="name" label="Select date" />}
+                  startDate={startDate}
+                  popperPlacement="bottom"
+                />
+              </DatepickerPresentationGroup>
+                <DatepickerPresentationGroup caption="Jam Mulai">
+                  <DatePicker1
+                    selected={startTime}
+                    onChange={handleStartTimeChange}
+                    customInput={<CustomInputField name="name" label="Select time" />}
+                    startDate={startDate}
+                    popperPlacement="bottom"
+                    showTimeSelect
+                    showTimeSelectOnly
+                    dateFormat="h:mm aa"
+                  />
+              </DatepickerPresentationGroup>
+                <DatepickerPresentationGroup caption="Jam akhir">
+                  <DatePicker1
+                    selected={endTime}
+                    onChange={handleEndTimeChange}
+                    customInput={<CustomInputField name="name" label="Select time" />}
+                    startDate={startDate}
+                    popperPlacement="bottom"
+                    showTimeSelect
+                    showTimeSelectOnly
+                    dateFormat="h:mm aa"
+                  />
+              </DatepickerPresentationGroup>
+              <form onSubmit={submitHandler}>
+                <button
+                type="submit"
+                className="bg-green-500 w-full mt-[3rem] hover:bg-green-900 text-white font-bold py-2 px-4 rounded" >
+                Submit
+              </button>
+              </form>
             </div>
-
-            {/* Pokoknya daerah sini yg mulai aneh, ntar liat aja klo dh di run */}
             <div>
-            <h1 class="text-center">
-              <span class="text-black-500 font-bold"></span>
-            </h1>
-            <div className="flex h-screen">
-              <div>
-              
+              <h1 class="text-center">
+                <span class="text-black-500 font-bold"></span>
+              </h1>
+              <div className="flex h-screen">
+                <div>
+                </div>
               </div>
-            </div>
             </div>
             <div className='space-y-4'>
                 <div>
                     <p>Deskripsi</p>
                 </div>
                 <div>
-                    Lorem ipsum, dolor sit amet consectetur adipisicing elit. Laboriosam illum dicta nesciunt vitae dignissimos ea quibusdam molestiae dolorum magni id qui maxime necessitatibus autem incidunt suscipit, explicabo excepturi rerum adipisci est rem! Saepe, repudiandae ex aperiam sunt quo aliquid incidunt velit dolorem aut ratione modi beatae odit autem iure hic, quasi recusandae tenetur iusto accusantium voluptate consequatur. Quibusdam fugit facilis id sit fuga doloremque at inventore distinctio blanditiis temporibus suscipit, placeat vitae, quod praesentium in sunt odio velit omnis deleniti molestias? Odit veniam, modi deleniti cum, labore sunt earum minus quibusdam quasi perspiciatis ea eius, quaerat in vel magni corrupti!
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam aliquam eget nisl id aliquet. Mauris vitae turpis vitae sapien scelerisque dapibus nec sollicitudin magna. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Ut venenatis lobortis arcu non feugiat. Duis nisl justo, posuere facilisis fermentum sed, tincidunt quis felis. Etiam lacus dui, euismod non ornare nec, gravida at sapien. 
+                    { deskripsiTempat } 
                 </div>
                 <div>
-                    Fasilitas : Sound system, microphone, proyektor
+                    Fasilitas : { fasilitasTempat }
                 </div>
                 <div>
-                    Kapasitas ~2500 orang
+                    Kapasitas ~{ kapasitasTempat } orang
                 </div>
             </div>
           </div>
