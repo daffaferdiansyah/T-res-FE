@@ -8,6 +8,7 @@ import flowbit from '../../node_modules/flowbite/dist/flowbite.min.js'
 import Swal from "sweetalert2";
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
+import _ from 'lodash';
 
 
 function DatePicker1(props) {
@@ -398,12 +399,12 @@ export default function Details() {
   const [kapasitasTempat, setKapasitasTempat] = useState('');
 
   React.useEffect(() => {
+    if (_.isEmpty(localStorage.getItem('user'))) {
+      navigate('/');
+    }
+
     const user = JSON.parse(localStorage.getItem('user'));
     setUserData(user);
-
-    if(!localStorage.getItem('user')){
-      navigate('/login');
-    }
 
     axios.get(`http://localhost:8080/place/view/${id}`)
     .then((res) => {
@@ -443,6 +444,10 @@ export default function Details() {
 
   const handleDateChange = useCallback(
     (start) => {
+      start.setHours(0);
+      start.setMinutes(0);
+      start.setSeconds(0);
+      start.setMilliseconds(0);
       setStartDate(start);
       console.log(start);
     },
@@ -462,12 +467,15 @@ export default function Details() {
   const submitHandler = (e) => {
     e.preventDefault();
     axios.get('http://localhost:8080/schedule/availability', {
+      namaTempat: namaTempat,
       tanggal: startDate,
       waktuAwal: startTime,
       waktuAkhir: endTime
     }).then((res) => {  
+      console.log(res);
       if (res.status == '200') {
-        axios.post('http://localhost:8080/schedule/availability', {
+        console.log('masuk call submit intinya  ')
+        axios.post('http://localhost:8080/schedule/input', {
           tanggal: startDate,
           waktuAwal: startTime,
           waktuAkhir: endTime,
@@ -486,6 +494,13 @@ export default function Details() {
           })
           .then((res) => {
             if (res.isConfirmed) window.location.href = "/homepage";
+          })
+        })
+        .catch((err) => {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: err.message,
           })
         })
       }

@@ -3,14 +3,25 @@ import logo from '../assets/logo-white-removebg-preview 2.png'
 import logouser from '../assets/user.png'
 import logogedung from '../assets/cityscape.png'
 import telkom from '../assets/5f55ae3c33eab.jpg'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios';
 import Swal from "sweetalert2";
+import _ from "lodash"
 
 function Homepage() {
+  const navigate = useNavigate();
   const [building, setBuilding] = React.useState([])
+  const [org, setOrg] = React.useState();
 
   React.useEffect(() => {
+    if (_.isEmpty(JSON.parse(localStorage.getItem('user')))) {
+      navigate('/');
+    }
+
+    const localData = localStorage.getItem('user');
+    const data = JSON.parse(localData);
+    setOrg(data.data.userData.org);
+
     axios.get('http://localhost:8080/place/view')
     .then(res => {
       setBuilding(res.data.data)
@@ -29,7 +40,7 @@ function Homepage() {
                     <div>
                         <img src={logouser} className='w-7' alt="" />
                     </div>
-                    <div>HIMA IF</div>
+                    <div>{org}</div>
                 </div>
             </div>
         </div>
